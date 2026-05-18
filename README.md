@@ -17,59 +17,106 @@ Este proyecto es un simulador backend puro en Java nativo diseñado para demostr
 ```mermaid
 %%{init: { 'flowchart': { 'curve': 'linear' } } }%%
 classDiagram
+    %% --- PATRÓN SINGLETON ---
     class ConfigurationManager {
         -static ConfigurationManager instance
-        +static getInstance() ConfigurationManager
-    }
-    class Coupon {
-        -String code
-    }
-    class CouponBuilder {
-        -Coupon coupon
-        +getResult() Coupon
-    }
-    class ClonableCampaign {
-        <<interface>>
-        +clone()
-    }
-    class Campaign {
-        -String name
-        -List coupons
-    }
-    class Notifier {
-        <<interface>>
-        +sendNotification()
-    }
-    class NotifierFactory {
-        +static createNotifier()
-    }
-    class WelcomeKitFactory {
-        <<interface>>
-        +createWelcomeCoupon()
-    }
-    class EmailNotifier {
-        %% Clase compacta sin celdas vacías
-    }
-    class SmsNotifier {
-        %% Clase compacta sin celdas vacías
-    }
-    class VipKitFactory {
-        %% Clase compacta sin celdas vacías
-    }
-    class RegularKitFactory {
-        %% Clase compacta sin celdas vacías
+        -double maxDiscountLimit
+        -String baseCurrency
+        -ConfigurationManager()
+        +static ConfigurationManager getInstance()
+        +getMaxDiscountLimit() double
+        +getBaseCurrency() String
     }
 
-    CouponBuilder --> Coupon : "Builds"
+    %% --- PATRÓN BUILDER (CLASES INDEPENDIENTES) ---
+    class Coupon {
+        -String code
+        -double discountPercentage
+        -String expirationDate
+        -String exclusiveCategory
+        +Coupon()
+        +setCode(String code) void
+        +setDiscountPercentage(double pct) void
+        +setExpirationDate(String date) void
+        +setExclusiveCategory(String cat) void
+        +toString() String
+    }
+
+    class CouponBuilder {
+        -Coupon coupon
+        +CouponBuilder()
+        +reset() void
+        +buildBasicData(String code, double pct) CouponBuilder
+        +withExpirationDate(String date) CouponBuilder
+        +withExclusiveCategory(String cat) CouponBuilder
+        +getResult() Coupon
+    }
+    CouponBuilder --> Coupon : "Asocia / Construye"
+
+    %% --- PATRÓN PROTOTYPE ---
+    class ClonableCampaign {
+        <<interface>>
+        +clone() ClonableCampaign
+    }
+
+    class Campaign {
+        -String name
+        -List~Coupon~ coupons
+        +Campaign(String name)
+        +addCoupon(Coupon coupon) void
+        +setName(String name) void
+        +getName() String
+        +clone() Campaign
+        +toString() String
+    }
     ClonableCampaign <|.. Campaign
-    Campaign --> "*" Coupon : "Contains"
+    Campaign --> "*" Coupon : "Contiene"
+
+    %% --- PATRÓN FACTORY METHOD ---
+    class Notifier {
+        <<interface>>
+        +sendNotification(String message) void
+    }
+    class EmailNotifier { +sendNotification(String m) void }
+    class SmsNotifier { +sendNotification(String m) void }
     Notifier <|.. EmailNotifier
     Notifier <|.. SmsNotifier
-    NotifierFactory ..> Notifier : "Creates"
+
+    class NotifierFactory {
+        +static createNotifier(String type) Notifier
+    }
+    NotifierFactory ..> Notifier : "Crea"
+
+    %% --- PATRÓN ABSTRACT FACTORY ---
+    class WelcomeKitFactory {
+        <<interface>>
+        +createWelcomeCoupon() Coupon
+        +createWelcomeMessage() String
+    }
+
+    class VipKitFactory {
+        +createWelcomeCoupon() Coupon
+        +createWelcomeMessage() String
+    }
+
+    class RegularKitFactory {
+        +createWelcomeCoupon() Coupon
+        +createWelcomeMessage() String
+    }
     WelcomeKitFactory <|.. VipKitFactory
     WelcomeKitFactory <|.. RegularKitFactory
-    VipKitFactory ..> CouponBuilder : "Uses"
-    RegularKitFactory ..> CouponBuilder : "Uses"
+    VipKitFactory ..> CouponBuilder : "Instancia y usa"
+    RegularKitFactory ..> CouponBuilder : "Instancia y usa"
+
+    %% --- CLIENTE / SIMULADOR ---
+    class Main {
+        +main(String[] args) static
+    }
+    Main ..> ConfigurationManager : "Consulta"
+    Main ..> CouponBuilder : "Usa"
+    Main ..> Campaign : "Clona"
+    Main ..> NotifierFactory : "Usa"
+    Main ..> WelcomeKitFactory : "Usa"
 
 ```
 
