@@ -1,6 +1,6 @@
 # 🎟️ Campaign & Coupon Management System - Backend
 
-Este proyecto es un simulador backend puro en Java nativo diseñado para demostrar la aplicación práctica y desacoplada de los **5 patrones de diseño creacionales** de la Gang of Four (GoF). El sistema orquesta la creación y gestión dinámica de campañas publicitarias y cupones de beneficios sin dependencias externas.
+Este proyecto es un simulador backend puro en Java nativo diseñado para demostrar la aplicación práctica y desacoplada de los **5 patrones de diseño creacionales**. El sistema se encarga de la creación y gestión dinámica de campañas publicitarias y cupones de beneficios sin dependencias externas.
 
 ## 💡 Patrones Aplicados
 
