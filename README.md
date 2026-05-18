@@ -30,22 +30,30 @@ classDiagram
     }
     class ClonableCampaign {
         <<interface>>
-        +clone() ClonableCampaign
+        +clone()
     }
     class Campaign {
         -String name
-        -List~Coupon~ coupons
+        -List coupons
     }
     class Notifier {
         <<interface>>
-        +sendNotification() void
+        +sendNotification()
+    }
+    class EmailNotifier {
+    }
+    class SmsNotifier {
     }
     class NotifierFactory {
-        +static createNotifier() Notifier
+        +static createNotifier()
     }
     class WelcomeKitFactory {
         <<interface>>
-        +createWelcomeCoupon() Coupon
+        +createWelcomeCoupon()
+    }
+    class VipKitFactory {
+    }
+    class RegularKitFactory {
     }
 
     CouponBuilder --> Coupon : "Builds"
@@ -58,3 +66,15 @@ classDiagram
     WelcomeKitFactory <|.. RegularKitFactory
     VipKitFactory ..> CouponBuilder : "Uses"
     RegularKitFactory ..> CouponBuilder : "Uses"
+
+```
+
+## 🛠️ Tecnologías y Ejecución
+
+* **Stack**: Java 17+ (POO pura sin frameworks externos).
+* **Clonación**: `git clone https://github.com/lucasberonvonbrand/creational-patterns.git`
+* **Ejecución**: Abrir en tu IDE y correr el método `main` en `src/main/java/com/creationalpatterns/Main.java`.
+
+## 👨‍💻 Autor
+
+- **Lucas Ruben Beron Von Brand**
